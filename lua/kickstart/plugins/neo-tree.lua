@@ -20,6 +20,10 @@ return {
           ['\\'] = 'close_window',
         },
       },
+      filtered_items = {
+        visible = true,
+      },
+      hijack_netrw_behavior = 'open_current', -- not "disabled" or "default"
     },
   },
 }
