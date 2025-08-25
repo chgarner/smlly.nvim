@@ -1,6 +1,6 @@
 return {
   'Civitasv/cmake-tools.nvim',
-  dependencies = { 'nvim-lua/plenary.nvim' },
+  dependencies = { 'nvim-lua/plenary.nvim', 'akinsho/toggleterm.nvim' },
   opts = {},
   config = function()
     local osys = require 'cmake-tools.osys'
@@ -9,8 +9,8 @@ return {
       ctest_command = 'ctest', -- this is used to specify ctest command path
       cmake_use_preset = true,
       cmake_regenerate_on_save = false, -- auto generate when save CMakeLists.txt
-      cmake_generate_options = { '-DCMAKE_EXPORT_COMPILE_COMMANDS=1' }, -- this will be passed when invoke `CMakeGenerate`
-      cmake_build_options = {}, -- this will be passed when invoke `CMakeBuild`
+      cmake_generate_options = { '-GNinja', '-DCMAKE_EXPORT_COMPILE_COMMANDS=1' }, -- this will be passed when invoke `CMakeGenerate`
+      cmake_build_options = { '-j4' }, -- this will be passed when invoke `CMakeBuild`
       -- support macro expansion:
       --       ${kit}
       --       ${kitGenerator}
@@ -42,8 +42,10 @@ return {
         runInTerminal = true,
         console = 'integratedTerminal',
       },
+
+      -- Cmake_Exexutor is used to generate and build with cmake
       cmake_executor = { -- executor to use
-        name = 'quickfix', -- name of the executor
+        name = 'toggleterm', -- name of the executor
         opts = {}, -- the options the executor will get, possible values depend on the executor type. See `default_opts` for possible values.
         default_opts = { -- a list of default and possible values for executors
           quickfix = {
@@ -51,10 +53,10 @@ return {
             position = 'belowright', -- "vertical", "horizontal", "leftabove", "aboveleft", "rightbelow", "belowright", "topleft", "botright", use `:h vertical` for example to see help on them
             size = 10,
             encoding = 'utf-8', -- if encoding is not "utf-8", it will be converted to "utf-8" using `vim.fn.iconv`
-            auto_close_when_success = true, -- typically, you can use it with the "always" option; it will auto-close the quickfix buffer if the execution is successful.
+            auto_close_when_success = true, -- typically, you can use it with the "always" option;u; it will auto-close the quickfix buffer if the execution is successful.
           },
           toggleterm = {
-            direction = 'float', -- 'vertical' | 'horizontal' | 'tab' | 'float'
+            direction = 'horizontal', -- 'vertical' | 'horizontal' | 'tab' | 'float'
             close_on_exit = false, -- whether close the terminal when exit
             auto_scroll = true, -- whether auto scroll to the bottom
             singleton = true, -- single instance, autocloses the opened one, if present
@@ -64,13 +66,11 @@ return {
               strategy = {
                 'toggleterm',
                 direction = 'horizontal',
-                auto_scroll = true,
+                autos_croll = true,
                 quit_on_exit = 'success',
               },
             }, -- options to pass into the `overseer.new_task` command
-            on_new_task = function(task)
-              require('overseer').open { enter = false, direction = 'right' }
-            end, -- a function that gets overseer.Task when it is created, before calling `task:start`
+            on_new_task = function(task) end, -- a function that gets overseer.Task when it is created, before calling `task:start`
           },
           terminal = {
             name = 'Main Terminal',
@@ -88,11 +88,11 @@ return {
             start_insert = false, -- If you want to enter terminal with :startinsert upon using :CMakeRun
             focus = false, -- Focus on terminal when cmake task is launched.
             do_not_add_newline = false, -- Do not hit enter on the command inserted when using :CMakeRun, allowing a chance to review or modify the command before hitting enter.
-          }, -- terminal executor uses the values in cmake_terminal
+          },
         },
       },
       cmake_runner = { -- runner to use
-        name = 'terminal', -- name of the runner
+        name = 'toggleterm', -- name of the runner
         opts = {}, -- the options the runner will get, possible values depend on the runner type. See `default_opts` for possible values.
         default_opts = { -- a list of default and possible values for runners
           quickfix = {
@@ -103,7 +103,7 @@ return {
             auto_close_when_success = true, -- typically, you can use it with the "always" option; it will auto-close the quickfix buffer if the execution is successful.
           },
           toggleterm = {
-            direction = 'float', -- 'vertical' | 'horizontal' | 'tab' | 'float'
+            direction = 'horizontal', -- 'vertical' | 'horizontal' | 'tab' | 'float'
             close_on_exit = false, -- whether close the terminal when exit
             auto_scroll = true, -- whether auto scroll to the bottom
             singleton = true, -- single instance, autocloses the opened one, if present

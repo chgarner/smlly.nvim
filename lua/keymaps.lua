@@ -55,11 +55,11 @@ vim.keymap.set('t', '<Esc><Esc>', '<C-\\><C-n>', { desc = 'Exit terminal mode' }
 -- Custom keymaps
 vim.keymap.set('n', '<leader>pb', '<C-6>', { desc = 'Go to the Previous Buffer' })
 
-vim.keymap.set('n', 'st', function()
-  vim.cmd.vnew()
-  vim.cmd.term()
-  vim.cmd.wincmd 'J'
-  vim.api.nvim_win_set_height(0, 15)
-end)
+-- vim.keymap.set('n', 'st', function()
+--   vim.cmd.vnew()
+--   vim.cmd.term()
+--   vim.cmd.wincmd 'J'
+--   vim.api.nvim_win_set_height(0, 15)
+-- end)
 
 -- vim: ts=2 sts=2 sw=2 et
